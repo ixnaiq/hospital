@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 <!-- <template>
-=======
-<template>
->>>>>>> 8142ea8 (初始化项目)
     <div>
       <h1>挂号记录</h1>
       <el-table :data="registrations" style="width: 100%">
@@ -80,7 +76,6 @@
       }
     }
   };
-<<<<<<< HEAD
   </script> -->
   <template>
     <div>
@@ -179,6 +174,4 @@
       }
     }
   };
-=======
->>>>>>> 8142ea8 (初始化项目)
   </script>

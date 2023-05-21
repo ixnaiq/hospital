@@ -175,6 +175,7 @@ import axios from 'axios';
   .right_top{
 
   }
+<<<<<<< HEAD
   </style> -->
   <style>
 .patient {
@@ -198,3 +199,6 @@ import axios from 'axios';
   margin-bottom: 5px;
 }
 </style>
+=======
+  </style>
+>>>>>>> 8142ea8 (初始化项目)

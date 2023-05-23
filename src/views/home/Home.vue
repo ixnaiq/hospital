@@ -107,6 +107,9 @@
     max-width: 1000px;
     margin: 50px auto;
   }
+  /* .sex{
+    width: 1000px;
+  } */
   </style>
   <!-- <template>
     <div class="registration-login">

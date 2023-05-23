@@ -26,22 +26,15 @@
           </div>
         </div>
         </div>  -->
-        <div>
-    <form>
-      <label for="name">姓名</label>
-      <input type="text" id="name" v-model="patient.name">
-      
-      <label for="age">年龄</label>
-      <input type="number" id="age" v-model="patient.age">
-      
-      <label for="gender">性别</label>
-      <select id="gender" v-model="patient.gender">
-        <option value="male">男</option>
-        <option value="female">女</option>
-      </select>
-      
-      <button @click.prevent="update">更新</button>
-    </form>
+        <div class="patient">
+    <h1>患者信息</h1>
+    <div class="patient-info">
+      <div class="patient-name">姓名：{{ patient.name }}</div>
+      <div class="patient-age">年龄：{{ patient.age }}</div>
+      <div class="patient-gender">性别：{{ patient.gender }}</div>
+      <div class="patient-email">邮箱：{{ patient.email }}</div>
+      <div class="patient-phone">联系电话：{{ patient.phone }}</div>
+    </div>
   </div>
       </el-aside>
       <el-main>
@@ -83,8 +76,9 @@
   <script>
 import RecordView from './childComps/RecordView.vue'
 import ReservationView from './childComps/ReservationView.vue'
-
+import axios from 'axios';
   export default {
+    name: 'Patient',
     components:{
       ReservationView,
         RecordView
@@ -93,13 +87,14 @@ import ReservationView from './childComps/ReservationView.vue'
 
     data() {
       return {
-        patientInfo: {
-          fullName: '张三',
-          gender: '男',
-          age: 30,
-          phone: '13888888888',
-          email: 'zhangsan@example.com'
-        },
+        patient: {},
+        // patientInfo: {
+        //   fullName: '张三',
+        //   gender: '男',
+        //   age: 30,
+        //   phone: '13888888888',
+        //   email: 'zhangsan@example.com'
+        // },
         // departments: ['内科', '外科', '妇产科', '小儿科'],
         // doctors: ['王医生', '李医生', '张医生', '赵医生'],
         // form: {
@@ -123,6 +118,16 @@ import ReservationView from './childComps/ReservationView.vue'
         // ]
       }
     },
+    created() {
+    // 从后端获取患者信息
+    axios.get('/api/patient')
+      .then(response => {
+        this.patient = response.data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  },
     // methods: {
     //   submitForm() {
     //     this.$refs.form.validate(valid => {
@@ -148,7 +153,7 @@ import ReservationView from './childComps/ReservationView.vue'
   }
   </script>
   
-  <style>
+  <!-- <style>
   .left_top{
     width: 100px;
     padding-top: 20px;
@@ -170,4 +175,26 @@ import ReservationView from './childComps/ReservationView.vue'
   .right_top{
 
   }
-  </style>
+  </style> -->
+  <style>
+.patient {
+  margin: 20px;
+}
+.patient-info {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+.patient-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.patient-age,
+.patient-gender,
+.patient-email,
+.patient-phone {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+</style>

@@ -1,56 +1,114 @@
 <template>
-    <div>
-      <el-form :model="doctor" label-width="80px">
-        <el-form-item label="姓名">
-          <el-input v-model="doctor.name"></el-input>
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="doctor.age" :min="0" :max="120"></el-input-number>
-        </el-form-item>
-        <el-form-item label="性别">
-          <el-select v-model="doctor.gender" placeholder="请选择">
-            <el-option label="男" value="male"></el-option>
-            <el-option label="女" value="female"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="科室">
-          <el-select v-model="doctor.department" placeholder="请选择">
-            <el-option label="内科" value="internal"></el-option>
-            <el-option label="外科" value="surgical"></el-option>
-            <el-option label="妇科" value="gynecology"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="擅长">
-          <el-input v-model="doctor.expertise"></el-input>
-        </el-form-item>
-        <el-form-item label="职位">
-          <el-input v-model="doctor.position"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('doctor')">保存</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        doctor: {
-          name: '',
-          age: '',
-          gender: '',
-          department: '',
-          expertise: '',
-          position: ''
-        }
+  <div class="doctor-profile">
+    <el-card class="doctor-card">
+      <div class="doctor-avatar">
+        <img src="../../../assets/imge/ed1f3883dbad286a5e70bfdb21a0a0bc.jpg" alt="">
+      </div>
+      <div class="doctor-info">
+        <div class="doctor-name">{{ doctor.name }}</div>
+        <div class="doctor-age">{{ doctor.age }}</div>
+        <div class="doctor-gender">{{ genderText }}</div>
+        <div class="doctor-nation">{{ doctor.nation }}</div>
+        <div class="doctor-nationality">{{ doctor.nationality }}</div>
+        <div class="doctor-education">{{ doctor.education }}</div>
+        <div class="doctor-department">{{ doctor.department }}</div>
+        <div class="doctor-position">{{ doctor.position}}</div>
+        <div class="doctor-specialty">{{ doctor.specialty }}</div>
+        <div class="doctor-introduction">{{ doctor.introduction }}</div>
+      </div>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import ARJaxios from 'axios';
+import { computed } from 'vue';
+
+export default {
+  data() {
+    return {
+      genderText,
+      doctor: {  
+        name: '',
+        gender: '',
+        age:'',
+        nation:'',
+        nationality:'',
+        department: '',
+        position: '',
+        specialty: '',
+        introduction: ''
       }
-    },
-    methods: {
-      submitForm(doctor) {
-        console.log(doctor)
-      }
+    };
+  },
+  created() {
+    this.fetchDoctorProfile();
+  },
+  methods: {
+    fetchDoctorProfile() {
+      ARJaxios.get('/api/doctor/getDoctor')
+        .then(response => {
+          this.doctor = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  },
+  computed:{
+    genderText(){
+      return this.doctor.gender === 0 ? '女' : '男';
     }
   }
-  </script>
+};
+</script>
+
+<style scoped>
+.doctor-profile {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  height: 100%;
+}
+
+.doctor-card {
+  width: 600px;
+  padding: 30px;
+}
+
+.doctor-avatar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  
+}
+.doctor-avatar img{
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.doctor-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.doctor-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.do
+
+tor-gender,
+.doctor-department,
+.doctor-position,
+.doctor-specialty,
+.doctor-introduction {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+</style>
+
+   

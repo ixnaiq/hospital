@@ -1,165 +1,60 @@
-<!-- <template>
-    <div class="patient-registration">
-      <h1>患者挂号页面</h1>
-      <div class="department-select">
-        <h2>选择科室</h2>
-        <el-select v-model="selectedDepartment" placeholder="请选择科室" @change="onDepartmentChange">
-          <el-option v-for="department in departments" :key="department.value" :label="department.label" :value="department.value"></el-option>
-        </el-select>
-      </div>
-      <div class="doctor-select">
-        <h2>选择医生</h2>
-        <el-radio-group v-model="selectedDoctor" @change="onDoctorChange">
-          <el-radio v-for="doctor in doctors" :key="doctor.value" :label="doctor.value">
-            <div class="doctor-name">{{ doctor.name }}</div>
-            <div class="doctor-position">{{ doctor.position }}</div>
-            <div class="doctor-gender">{{ doctor.gender }}</div>
-            <div class="doctor-expertise">{{ doctor.expertise }}</div>
-          </el-radio>
-        </el-radio-group>
-      </div>
-      <div class="time-select">
-        <h2>选择预约时间</h2> <el-radio-group v-model="selectedTime" @change="onTimeChange">
-          <el-radio v-for="time in times" :key="time.value" :label="time.value">{{ time.label }}</el-radio>
-        </el-radio-group>
-      </div>
-      <div class="registration-info" v-if="registration">
-        <h2>挂号信息</h2>
-        <el-card>
-          <div class="registration-name">{{ registration.name }}</div>
-          <div class="registration-time">{{ registration.time }}</div>
-          <div class="registration-fee">{{ registration.fee }}</div>
-        </el-card>
-      </div>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        departments: [
-          {
-            label: '内科',
-            value: 'internal'
-          },
-          {
-            label: '外科',
-            value: 'surgery'
-          },
-          {
-            label: '儿科',
-            value: 'pediatrics'
-          },
-        ],
-        doctors: [
-          {
-            name: '张医生',
-            position: '主治医师',
-            gender: '男',
-            expertise: '擅长内科疾病',
-            department: 'internal',
-            value: 'doctor1'
-          },
-          {
-            name: '王医生',
-            position: '副医师',
-            gender: '女',
-            expertise: '擅长外科手术',
-            department: 'surgery',
-            value: 'doctor2'
-          },
-          {
-            name: '李医生',
-            position: '主治医师',
-            gender: '男',
-            expertise: '擅长儿科疾病',
-            department: 'pediatrics',
-            value: 'doctor3'
-          }
-        ],
-        times: [
-          {
-            label: '8:00-9:00',
-            value: '1'
-          },
-          {
-            label: '9:00-10:00',
-            value: '2'
-          },
-          {
-            label: '10:00-11:00',
-            value: '3'
-          },
-          {
-            label: '11:00-12:00',
-            value: '4'
-          },
-          {
-            label: '14:00-15:00',
-            value: '5'
-          },
-          {
-            label: '15:00-16:00',
-            value: '6'
-          },
-          {
-            label: '16:00-17:00',
-            value: '7'
-          }
-        ],
-        selectedDepartment: '',
-        selectedDoctor: '',
-        selectedTime: '',
-        registration: null
-      };
-    },
-    methods:{
-      onDepartmentChange() {
-        // 根据选择的科室过滤医生列表
-        this.selectedDoctor = '';
-        this.doctors = this.doctors.filter(doctor => doctor.department === this.selectedDepartment);
-      },
-      onDoctorChange() {
-        // 根据选择的医生更新挂号信息
-        this.registration = {
-          name: this.selectedDoctor,
-          time: this.selectedTime,
-          fee: 100
-        }
-      }
-    }
-  }
-       -->
 <template>
   <div>
     <h1 class="title">我的挂号</h1>
     <el-container>
+      <div class="block">
+        <el-date-picker v-model="date" type="date" placeholder="选择日期" 
+        
+        >
+        </el-date-picker>
+      </div>
+      <el-time-select
       
-      <el-select v-model="selectedDepartment" placeholder="选择科室" @change="fetchDoctors">
+        placeholder="起始时间"
+        v-model="startTime"
+        :picker-options="{
+          start: '08:30',
+          step: '00:30',
+          end: '16:30',
+        }"
+       
+      >
+      </el-time-select>
+      <el-time-select
+        placeholder="结束时间"
+        v-model="endTime"
+        :picker-options="{
+          start: '09:30',
+          step: '00:30',
+          end: '17:30',
+          minTime: startTime,
+        }"
+        
+      >
+      </el-time-select>
+      <el-select
+        v-model="selectedDepartment"
+        placeholder="选择科室"
+        @change="fetchDoctors"
+      >
         <el-option
           v-for="item in departments"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        ></el-option>
+          :key="item?.value"
+          :label="item?.label"
+          :value="item?.value"
+        >
+        </el-option>
       </el-select>
-
-      <el-select v-model="selectedDoctor" placeholder="选择医生" @change="fetchDoctorDetails">
+      <el-select
+        v-model="selectedDoctor"
+        placeholder="选择医生"
+        @change="fetchDoctorDetails"
+      >
         <el-option
           v-for="item in doctors"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        ></el-option>
-      </el-select>
-
-      <el-select v-model="selectedTime" placeholder="选择预约时间">
-        <el-option
-          v-for="item in timeSlots"
-          :key="item.id"
-          :label="item.time"
-          :value="item.id"
+          :key="item.value"
+          :label="item?.label"
+          :value="item?.value"
         ></el-option>
       </el-select>
 
@@ -173,79 +68,147 @@
       <p>职位: {{ doctorDetails.title }}</p>
       <p>性别: {{ doctorDetails.gender }}</p>
       <p>擅长: {{ doctorDetails.specialty }}</p>
-      <p>预约时间: {{ selectedTimeSlot.time }}</p>
+      <p>预约时间: {{ formatDate(date) }} {{ timeRange }}</p>
       <p>费用: {{ doctorDetails.fee }} 元</p>
     </el-card>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from "axios";
+import ARJaxios from "@/network/axios";
 
 export default {
   data() {
-    return {
+    return { 
+      date: "",
+      startTime: "",
+      endTime: "",
       departments: [],
       doctors: [],
-      timeSlots: [],
-      selectedDepartment: '',
-      selectedDoctor: '',
-      selectedTime: '',
+      selectedDepartment: "",
+      selectedDoctor: "",
+      selectedTime: "",
       showRegistrationDetails: false,
-      doctorDetails: {}
+      doctorDetails: {},
     };
   },
   computed: {
     selectedDepartmentName() {
-      const department = this.departments.find((dep) => dep.id === this.selectedDepartment);
-      return department ? department.name : '';
+      const department = this.departments.find(
+        (dep) => dep.id === this.selectedDepartment
+      );
+      return department ? department.name : "";
+    }, 
+    timeRange() {
+      return this.startTime + "~" + this.endTime;
     },
-    selectedTimeSlot() {
-      const timeSlot = this.timeSlots.find((slot) => slot.id === this.selectedTime);
-      return timeSlot || {};
-    }
+    formatDate(date) {
+      if (date) {
+        return this.date.toLocaleDateString();
+      } else {
+        return "";
+      }
+    },
   },
+  // watch: {
+  //   date: function () {},
+  // },
+
   methods: {
-    async fetchDepartments() {
-      try {
-        const response = await axios.get('/api/departments');
-        this.departments = response.data;
-      } catch (error) {
-        console.error(error);
-      }
+  //   handleDateChange(value) {
+  //     console.log(`selected value is ${value}`);
+  //   // 日期变化的处理逻辑
+  // },
+  // handleStartTimeChange(val) {
+  //   // 起始时间变化的处理逻辑
+  // },
+  // handleEndTimeChange(val) {
+  //   // 结束时间变化的处理逻辑
+  // },
+    transformData(data) {
+      return data.map((item) => {
+        return {
+          label: item.name,
+          value: item.id,
+        };
+      });
     },
-    async fetchDoctors() {
-      try {
-        const response = await axios.get(`/api/doctors?department=${this.selectedDepartment}`);
-        this.doctors = response.data;
-      } catch (error) {
-        console.error(error);
-      }
+    // async submit() {
+    //   const response = await ARJaxios.get(
+    //     "/api/patient//api/patient/getAllRegisterType",
+    //     {
+    //       date: this.date,
+    //       time: this.startTime+~+this.endTime,
+    //     }
+    //   );
+    //   console.log(response.data);
+    // },
+
+    fetchDepartments() {
+      ARJaxios({
+        url: "/api/patient/getDepartmentByDateAndTimeScope",
+        method: "GET",
+        params: { date: this.formatDate, time: this.timeRange },
+      }).then((res) => {
+        const department = this.transformData(res.data);
+        this.departments = department;
+      });
     },
-    async fetchDoctorDetails() {
-      try {
-        const response = await axios.get(`/api/doctors/${this.selectedDoctor}`);
-        this.doctorDetails = response.data;
-        this.fetchTimeSlots();
-      } catch (error) {
-        console.error(error);
-      }
+    fetchDoctors() {
+      ARJaxios({
+        url: "/api/patinet/getNameByDateAndTimeScopeAndDepartment",
+        method: "GET",
+        params: {
+          date: this.formatDate,
+          time: this.timeRange,
+          department: this.selectedDepartment,
+        },
+      }).then((res) => {
+        this.doctors = this.transformData(res.data);
+      });
     },
-    async fetchTimeSlots() {
-      try {
-        const response = await axios.get(`/api/time-slots?doctor=${this.selectedDoctor}`);
-        this.timeSlots = response.data;
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    submitRegistration() {
+    // fetchDoctorDetails() {
+    //   ARJaxios({
+    //     url: "/api/patient/getMessageByDateAndTimeScopeAndDepartmentAndName",
+    //     method: "GET",
+    //     params: {data:this.data ,time:this.time , department: this.selectedDepartment ,doctor:this.selectedDoctor},
+    //   }).then((res) => {
+    //     this.doctorDetails = res.data;
+    //   });
+    // },
+    // fetchTimeSlots() {
+    //   ARJaxios({
+    //     url: "/api/patient/getDataByDepartmentAndName",
+    //     method: "GET",
+    //   }).then((res) => {
+    //     this.tableData = res.data;
+    //   });
+    // },
+    async submitRegistration() {
+      await ARJaxios({
+        url: "/api/patient/getMessageByDateAndTimeScopeAndDepartmentAndName",
+        method: "PUT",
+        data: {
+          date: this.formatDate,
+          time: this.timeRange,
+          department: this.selectedDepartment,
+          doctorName: this.selectedDoctor,
+        },
+      }).then(
+        (res) => {
+          console.log(res.data);
+        },
+        (rej) => {
+          console.error(rej);
+        }
+      );
       this.showRegistrationDetails = true;
-    }
+    },
   },
   created() {
     this.fetchDepartments();
-  }
+  },
 };
 </script>
 <style>

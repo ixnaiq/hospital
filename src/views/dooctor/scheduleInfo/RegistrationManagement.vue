@@ -1,65 +1,95 @@
 <template>
-    <div>
-      <!-- 查询条件 -->
-      <el-form inline>
-        <el-form-item label="挂号状态">
-          <el-select v-model="status" placeholder="请选择">
-            <el-option label="未预约" value="unreserved"></el-option>
-            <el-option label="已完成" value="completed"></el-option>
-            <el-option label="已付款" value="paid"></el-option>
-          </el-select>
-        </el-form-item>
-        
-        <el-form-item>
-          <el-button type="primary" @click="search()">查询</el-button>
-        </el-form-item>
-      </el-form>
-      <!-- 挂号表格 -->
-      <el-table :data="registrations" style="width: 100%">
-        <el-table-column prop="id" label="挂号 ID" width="180"></el-table-column>
-        <el-table-column prop="patientName" label="患者姓名" width="180"></el-table-column>
-        <el-table-column prop="doctorName" label="医生姓名" width="180"></el-table-column>
-        <el-table-column prop="status" label="挂号状态" width="180">
-          <template v-slot:default="scope">
-            <span>{{ statusText(scope.row.status) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="180">
-          <template v-slot:default="scope">
-            <el-button @click="editRegistration(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="deleteRegistration(scope.$index, scope.row)" type="text" size="small">删除</el-button>
+  <div>
+    <el-row>
+      <el-button-group>
+        <el-button type="primary" @click="showUnreserved">未预约</el-button>
+        <el-button type="primary" @click="showCompleted">已完成</el-button>
+        <el-button type="primary" @click="showPaid">已付款</el-button>
+      </el-button-group>
+    </el-row>
+    <el-row>
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column prop="time" label="时间" width="180"></el-table-column>
+        <el-table-column prop="patient" label="患者" width="180"></el-table-column>
+        <el-table-column prop="status" label="状态" width="180"></el-table-column>
+        <el-table-column prop="amount" label="金额" width="180"></el-table-column>
+        <el-table-column label="操作">
+          <template v-slot:scope>
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        status: '',
-        registrations: []
-      };
+    </el-row>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      tableData: [
+        { time: '2022-06-01 14:30', patient: '张三', status: '未预约', amount: '100元' },
+        { time: '2022-06-02 09:00', patient: '李四', status: '已付款', amount: '80元' },
+        { time: '2022-06-03 16:00', patient: '王五', status: '已完成', amount: '120元' },
+        { time: '2022-06-04 10:30', patient: '赵六', status: '未预约', amount: '90元' },
+        { time: '2022-06-05 15:00', patient: '钱七', status: '已付款', amount: '70元' },
+      ]
+    };
+  },
+  methods: {
+    showUnreserved() {
+      // 调用后端 API，获取未预约的挂号数量
+      ARJaxios.get('/api/doctor/getFirstStatusRegisterType')
+        .then(response => {
+          this.tableData = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      
     },
-    methods: {
-      search() {
-        // 调用后端 API 获取挂号数据
-      },
-      statusText(status) {
-        const statusMap = {
-          unreserved: '未预约',
-          completed: '已完成',
-          paid: '已付款'
-        };
-        return statusMap[status] || '';
-      },
-      editRegistration(index, row) {
-        // 调用后端 API 更新挂号数据
-      },
-      deleteRegistration(index, row) {
-        // 调用后端 API 删除挂号数据
-      }
+    showCompleted() {
+      // 调用后端 API，获取已完成的挂号订单信息
+      ARJaxios.get('/api/doctor/getThirdStatusRegisterType')
+        .then(response => {
+          this.tableData = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    showPaid() {
+      // 调用后端 API，获取已付款的挂号订单信息
+      ARJaxios.get('/api/paid-orders')
+        .then(response => {
+          this.tableData = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    handleEdit(index, row) {
+      ARJaxios.put(`/api/orders/${row.id}`, row)
+        .then(response => {
+          console.log('编辑成功');
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      // 编辑挂号信息，与后端 API 交互
+    },
+    handleDelete(index, row) {
+      ARJaxios.delete(`/api/doctor/deleteRegisterType${row.id}`)
+        .then(response => {
+          console.log('删除成功');
+          this.tableData.splice(index, 1);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      // 删除挂号信息，与后端 API 交互
     }
-  };
-  </script>
+  }
+};
+</script>

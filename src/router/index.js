@@ -1,11 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router' 
 
-const Home = () => import('../views/home/Home')
-import Patient from '@/views/patient/Patient'
-import Doctor from '@/views/dooctor/Doctor'
- 
- 
+const Login = () => import('../views/users/login')
+const Patient = () =>import('../views/patient/Patient')
+const Doctor = () => import('@/views/dooctor/Doctor')
+const BasicInfo = () => import('../views/dooctor/childComps/BasicInfo')
+const EditDoctor =() => import('../views/dooctor/childComps/EditDoctor')
+const CateGory = () => import('../views/dooctor/childComps/CateGory') 
+const PatientInfo = () => import('../views/dooctor/childComps/PatientInfo')
+const RegistrationManagement = () => import('../views/dooctor/scheduleInfo/RegistrationManagement') 
+const ScheduleManagement = () => import('../views/dooctor/scheduleInfo/ScheduleManagement') 
+const TemplateManagement = () => import('../views/dooctor/scheduleInfo/TemplateManagement')  
+const Register = () => import( '../views/users/register')
+const RecordView = () => import('../views/patient/childComps/RecordView')
+const ReservationView = () => import('../views/patient/childComps/ReservationView')
+const DoctorInfo = () => import('../views/patient/childComps/DoctorInfo')
+
 // 1.安装VueRouter
 Vue.use(VueRouter)
 
@@ -13,29 +23,87 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '/',
-        redirect: '/home'
+        redirect: '/login'
     },
     {
-        path: '/home',
-        component: Home
+        path: '/login',
+        component: Login
+    },
+    {
+        path:'/login',
+        component: Login
+
+    },
+    {
+        path:'/register',
+        component:Register
     },
     {
         path: '/patient',
         name: 'patient',
         component: Patient,
-        meta: { requiresAuth: true, userType: 'patient' } // 添加路由元信息，表示需要登录才能访问，并且是患者界面
+        children:[
+            {
+                path:'recordview',
+                name:'recordview',
+                component:RecordView
+            },
+            {
+                path:'reservationview',
+                name:'reservationview',
+                component:ReservationView
+            },
+            {
+                path:'doctorinfo',
+                name:'doctor',
+                component:DoctorInfo
+            }
+
+        ]
     },
     {
         path: '/doctor',
         name: 'doctor',
         component: Doctor,
-        meta: { requiresAuth: true, userType: 'doctor' } // 添加路由元信息，表示需要登录才能访问，并且是医生界面
+        children: [
+            {
+                path:'basicinfo',
+                name:'basicinfo',
+                component:BasicInfo
+            },
+            {
+                path:'category',
+                name:'category',
+                component:CateGory
+            },
+            {
+                path:'editdoctor',
+                name:'editdoctor',
+                component:EditDoctor
+            },
+            {
+                path:'patientinfo',
+                name:'patientinfo',
+                component:PatientInfo
+            },
+            {
+                path:'registrationmanagement',
+                name:'registrationmanagement',
+                component:RegistrationManagement
+            },
+            {
+                path:'schedulemanagement',
+                name:'schedulemanagement',
+                component:ScheduleManagement
+            },
+            {
+                path:'templatemanagement',
+                name:'templatemanagement',
+                component:TemplateManagement
+            },
+        ]
     },
-    {
-        path: '*',
-        redirect: '/patient-login'
-    }  
-      
+    { path: '*', redirect: '/404' }
 ]
 
 // 创建路由对象

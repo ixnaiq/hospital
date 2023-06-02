@@ -1,204 +1,135 @@
 <template>
+  <div class="home_content">
     <el-container>
-      <el-aside class="left_top">
-        <!-- <div>
-          <h1>个人信息</h1>
-          <div class="info">
-          <div>
-            <span>姓名：</span>
-            <span>{{ name }}</span>
-          </div>
-          <div>
-            <span>性别：</span>
-            <span>{{ patientInfo.gender }}</span>
-          </div>
-          <div>
-            <span>年龄：</span>
-            <span>{{ patientInfo.age }}</span>
-          </div>
-          <div>
-            <span>电话：</span>
-            <span>{{ patientInfo.phone }}</span>
-          </div>
-          <div>
-            <span>邮箱：</span>
-            <span>{{ patientInfo.email }}</span>
-          </div>
+      <el-menu default-active="1-4-1" class="el-menu-vertical-demo">
+        <div class="logo">
+          <img src="../../assets/imge/设计稿20230527-3.jpg" alt="" />
         </div>
-        </div>  -->
-        <div class="patient">
-    <h1>患者信息</h1>
-    <div class="patient-info">
-      <div class="patient-name">姓名：{{ patient.name }}</div>
-      <div class="patient-age">年龄：{{ patient.age }}</div>
-      <div class="patient-gender">性别：{{ patient.gender }}</div>
-      <div class="patient-email">邮箱：{{ patient.email }}</div>
-      <div class="patient-phone">联系电话：{{ patient.phone }}</div>
-    </div>
-  </div>
-      </el-aside>
+        <el-submenu index="1">
+          <template v-slot:title>
+            <i class="el-icon-location"></i> <span>我的挂号</span>
+          </template>
+          <el-menu-item-group>
+            <!-- <span>分组一</span> -->
+            <router-link to="/patient/reservationview">
+              <el-menu-item index="1-1">挂号</el-menu-item>
+            </router-link>
+            <router-link to="/patient/doctorinfo">
+              <el-menu-item index="1-2">医生信息</el-menu-item>
+            </router-link>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-submenu index="2">
+          <template v-slot:title>
+            <i class="el-icon-location"></i> <span>挂号记录</span>
+          </template>
+          <el-menu-item-group>
+            <router-link to="/patient/recordview">
+              <el-menu-item index="2-1">我的记录</el-menu-item>
+            </router-link>
+          </el-menu-item-group>
+        </el-submenu>
+        <!-- <el-submenu index="3">
+          <template v-slot:title>
+            <i class="el-icon-location"></i> <span>退出登录</span>
+          </template>
+          <div>
+            <el-button type="danger" @click="logout">退出登录</el-button>
+            
+          </div>
+        </el-submenu> -->
+        <div class="logout">
+            <el-button type="danger" @click="logout" class="logoutButton">退出登录</el-button>
+            
+          </div>
+      </el-menu>
       <el-main>
-        <reservation-view class="right_top"></reservation-view>
-        <record-view class="right_bottom"></record-view>
+        <div class="main_content"><router-view></router-view></div>
+        <!-- <div><el-dialog
+              title="确认退出登录"
+              v-model:visible="dialogVisible"
+              :show-close="false"
+              :close-on-click-modal="false"
+              :close-on-press-escape="false"
+            >
+              <span>确定要退出登录吗？</span>
+              <template v-slot:footer>
+                <span class="dialog-footer">
+                  <el-button @click="dialogVisible = false">取消</el-button>
+                  <el-button type="primary" @click="logout">确定</el-button>
+                </span>
+              </template>
+            </el-dialog></div> -->
       </el-main>
     </el-container>
-      <!-- <h1>预约挂号</h1> -->
-      <!-- <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="科室" prop="department">
-          <el-select v-model="form.department" placeholder="请选择科室">
-            <el-option v-for="(item,index) in departments" :key="index" :label="item" :value="item"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="医生" prop="doctor">
-          <el-select v-model="form.doctor" placeholder="请选择医生">
-            <el-option v-for="(item,index) in doctors" :key="index" :label="item" :value="item"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="预约时间" prop="appointmentTime">
-          <el-date-picker v-model="form.appointmentTime" type="datetime" placeholder="请选择预约时间"></el-date-picker>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click.prevent="submitForm">立即预约</el-button>
-        </el-form-item>
-      </el-form> -->
-      <!-- <h1>预约记录</h1>
-      <div class="record">
-        <el-table :data="appointmentRecords" style="width: 100%">
-          <el-table-column prop="department" label="科室"></el-table-column>
-          <el-table-column prop="doctor" label="医生"></el-table-column>
-          <el-table-column prop="appointmentTime" label="预约时间"></el-table-column>
-          <el-table-column prop="status" label="状态"></el-table-column>
-        </el-table>
-      </div> -->
-    <!-- </div> -->
-  </template>
-  
-  <script>
-import RecordView from './childComps/RecordView.vue'
-import ReservationView from './childComps/ReservationView.vue'
-import axios from 'axios';
-  export default {
-    name: 'Patient',
-    components:{
-      ReservationView,
-        RecordView
-    },
-    props: ['name', 'phone', 'email'],
-
-    data() {
-      return {
-        patient: {},
-        // patientInfo: {
-        //   fullName: '张三',
-        //   gender: '男',
-        //   age: 30,
-        //   phone: '13888888888',
-        //   email: 'zhangsan@example.com'
-        // },
-        // departments: ['内科', '外科', '妇产科', '小儿科'],
-        // doctors: ['王医生', '李医生', '张医生', '赵医生'],
-        // form: {
-        //   department: '',
-        //   doctor: '',
-        //   appointmentTime: ''
-        // },
-        // appointmentRecords: [
-        //   {
-        //     department: '内科',
-        //     doctor: '李医生',
-        //     appointmentTime: '2022-01-01 10:00:00',
-        //     status: '已预约'
-        //   },
-        //   {
-        //     department: '外科',
-        //     doctor: '王医生',
-        //     appointmentTime: '2022-01-02 14:00:00',
-        //     status: '已完成'
-        //   }
-        // ]
-      }
-    },
-    created() {
-    // 从后端获取患者信息
-    axios.get('/api/patient')
-      .then(response => {
-        this.patient = response.data;
-      })
-      .catch(error => {
-        console.error(error);
-      });
+  </div>
+</template>  
+<script>
+export default {
+  data() {
+    return {
+      isCollapse: true,
+      query: "",
+      // dialogVisible: false,
+    };
   },
-    // methods: {
-    //   submitForm() {
-    //     this.$refs.form.validate(valid => {
-    //       if (valid) {
-    //         // 处理预约挂号逻辑
-    //         console.log(this.form)
-    //       } else {
-    //         return false
-    //       }
-    //     })
-    //   }
-    // },
-    // beforeRouteEnter(to, from, next) {
-    // const isAuthenticated = localStorage.getItem('isAuthenticated')
-    // const userType = localStorage.getItem('userType')
-    // if (isAuthenticated && userType === this.userType) {
-    //   next()
-    // } else {
-    //   const loginRouteName = this.userType === 'patient' ? 'patient-login' : 'doctor-login'
-    //   next({ name: loginRouteName })
-    // }
-    // }
-  }
-  </script>
-  
-  <!-- <style>
-  .left_top{
-    width: 100px;
-    padding-top: 20px;
-  }
-  .patient {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-  }
-  
-  .info {
-    margin-bottom: 20px;
-  }
-  
-  .record {
-    margin-top: 20px;
-  }
-  .right_top{
-
-  }
-<<<<<<< HEAD
-  </style> -->
-  <style>
-.patient {
-  margin: 20px;
+  methods: {
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleLogout() {
+      this.dialogVisible = true;
+    },
+    logout() {
+      localStorage.removeItem('token')
+      // router.replace('/login')
+      // 跳转到登录页面
+      this.$router.push("/login");
+      // 提示用户已退出登录
+      this.$message.success("已退出登录");
+      // 关闭弹窗
+      this.dialogVisible = false;
+    },
+  },
+  created() {
+    console.log(this.$route);
+    this.query = JSON.stringify(this.$route.query);
+  },
+};
+</script>
+<style>
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+  /* margin-top: 200px; */
+  /* border: 10px; */
 }
-.patient-info {
-  display: flex;
-  flex-direction: column;
-  margin-top: 20px;
+.logo img {
+  width: 200px;
+  height: 200px;
 }
-.patient-name {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
+.logout{
+  margin-top: 280px;
+ 
 }
-.patient-age,
-.patient-gender,
-.patient-email,
-.patient-phone {
-  font-size: 18px;
-  margin-bottom: 5px;
+.logoutButton{
+  width: 200px;
+  height: 50px;
+  border: 1px ;
+  background-color: hsl(0, 0%, 100%);
+  color: black;
+  border-color: #fff;
 }
+/* .main_content{
+width: 100%;
+height: 80px;
+background-color: rgb(34, 172, );
+} */
+/* .home_content{
+  background-color:rgba(159, 201, 244, 0.5);
+} */
 </style>
-=======
-  </style>
->>>>>>> 8142ea8 (初始化项目)
+ 
